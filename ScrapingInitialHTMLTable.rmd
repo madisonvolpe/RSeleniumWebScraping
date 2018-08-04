@@ -1,4 +1,4 @@
-```{r}
+```r
 library(RSelenium)
 library(seleniumPipes)
 library(XML)
@@ -12,7 +12,7 @@ library(dplyr)
 
 ## Initiate webdrive in RSelenium
 
-```{r}
+```r
 #open docker
 #to intiate server, run:
 #docker run hello-world
@@ -27,7 +27,7 @@ remDR$setImplicitWaitTimeout(3000)
 
 ## Navigating to WebPage and Finding Appropriate Elements 
 
-```{r}
+```r
 remDR$navigate("http://www.dc.state.fl.us/OffenderSearch/Search.aspx?TypeSearch=AI") #navigating to Inmate Population Search
 
 remDR$screenshot(display = TRUE) # check that it navigated to right page
@@ -39,7 +39,7 @@ SubmitButton <- remDR$findElement(using = "css selector", value ="#ctl00_Content
 
 ## Selecting the DC Criminal Histoy-Offense Category and Scrolling Down until "Other Crime" then Clicking the SubmitButton 
 
-```{r}
+```r
 DropDown$clickElement() #clicking drop down menu 
 
 remDR$screenshot(display=TRUE)#display that something in the drop down menu is being clicked, okay so clicking the drop down menu always selects the DRUG CRIME offense, it takes 7 drop down keys to get to "Other Crime"
@@ -51,11 +51,11 @@ for(i in 1:downKeys){
 } #this loops and clicks the "down_arrow"" key 7 times, in order to highlight "Other Crime"
 ```
 
-```{r}
+```r
 remDR$screenshot(display = TRUE) #scroll until "Other Crime" is highlighted- use remDR$screenshot(display = TRUE) command to display that OTHER CRIME is highlighted! 
 ```
 
-```{r}
+```r
 SubmitButton$clickElement() #Press submit button
 
 remDR$screenshot(display=TRUE)#display that an html table is displayed on the first page=
@@ -63,7 +63,7 @@ remDR$screenshot(display=TRUE)#display that an html table is displayed on the fi
 
 ## Extracting the First Inmate Table
 
-```{r}
+```r
 InmateTable<- remDR$getPageSource()[[1]] %>%
   read_html()%>%
   html_nodes(css = "#ctl00_ContentPlaceHolder1_grdList")%>%
@@ -72,7 +72,7 @@ InmateTable<- remDR$getPageSource()[[1]] %>%
 ```
 
 ## Loop to Scrape the Tables on the Following pages
-```{r}
+```r
 #css selector for the next button "#ctl00_ContentPlaceHolder1_btnListNext"
 #find element
 mylist <- vector("list", length(1:968))
