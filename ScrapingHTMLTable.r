@@ -1,0 +1,100 @@
+```{r}
+library(RSelenium)
+library(seleniumPipes)
+library(XML)
+library(rvest)
+library(stats)
+library(stringr)
+library(RCurl)
+library(plyr)
+library(dplyr)
+```
+
+## Initiate webdrive in RSelenium
+
+```{r}
+#open docker
+#to intiate server, run:
+#docker run hello-world
+#docker run -d -p 4445:4444 selenium/standalone-firefox:2.53.1
+
+remDR <- remoteDriver(remoteServerAddr = "localhost" #on windows the remoteServerAddress is ip address "192.168.99.100"
+                      , port = 4445L
+                      , browserName = "firefox")
+remDR$open()
+remDR$setImplicitWaitTimeout(3000)
+```
+
+## Navigating to WebPage and Finding Appropriate Elements 
+
+```{r}
+remDR$navigate("http://www.dc.state.fl.us/OffenderSearch/Search.aspx?TypeSearch=AI") #navigating to Inmate Population Search
+
+remDR$screenshot(display = TRUE) # check that it navigated to right page
+
+DropDown <- remDR$findElement(using = "css selector", value = "#ctl00_ContentPlaceHolder1_txtOffenseCategory") #finding drop down menu 
+
+SubmitButton <- remDR$findElement(using = "css selector", value ="#ctl00_ContentPlaceHolder1_btnSubmit2")
+```
+
+## Selecting the DC Criminal Histoy-Offense Category and Scrolling Down until "Other Crime" then Clicking the SubmitButton 
+
+```{r}
+DropDown$clickElement() #clicking drop down menu 
+
+remDR$screenshot(display=TRUE)#display that something in the drop down menu is being clicked, okay so clicking the drop down menu always selects the DRUG CRIME offense, it takes 7 drop down keys to get to "Other Crime"
+
+downKeys<-7
+
+for(i in 1:downKeys){
+  DropDown$sendKeysToActiveElement(list(key="down_arrow"))
+} #this loops and clicks the "down_arrow"" key 7 times, in order to highlight "Other Crime"
+```
+
+```{r}
+remDR$screenshot(display = TRUE) #scroll until "Other Crime" is highlighted- use remDR$screenshot(display = TRUE) command to display that OTHER CRIME is highlighted! 
+```
+
+```{r}
+SubmitButton$clickElement() #Press submit button
+
+remDR$screenshot(display=TRUE)#display that an html table is displayed on the first page=
+```
+
+## Extracting the First Inmate Table
+
+```{r}
+InmateTable<- remDR$getPageSource()[[1]] %>%
+  read_html()%>%
+  html_nodes(css = "#ctl00_ContentPlaceHolder1_grdList")%>%
+  html_table()%>%
+  data.frame(stringsAsFactors = FALSE)
+```
+
+## Loop to Scrape the Tables on the Following pages (Number of Pages Needs to be Changed)
+
+```{r}
+#css selector for the next button "#ctl00_ContentPlaceHolder1_btnListNext"
+#find element
+mylist <- vector("list", length(1:968))
+
+start.time <- Sys.time()
+
+pages <- 973
+
+for(i in 1:pages){
+  try(NextButton <- remDR$findElement(using = "css selector", value = "#ctl00_ContentPlaceHolder1_btnListNext"))
+  try(NextButton$clickElement())
+  Sys.sleep(3) 
+  read_html(remDR$getPageSource()[[1]])
+mylist[[i]]<- remDR$getPageSource()[[1]] %>%
+  read_html()%>%
+  html_nodes(css = "#ctl00_ContentPlaceHolder1_grdList")%>%
+  html_table()%>%
+  data.frame(stringsAsFactors = FALSE)
+}
+
+end.time <- Sys.time()
+
+end.time-start.time 
+```
