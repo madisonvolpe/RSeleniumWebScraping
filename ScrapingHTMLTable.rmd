@@ -71,8 +71,7 @@ InmateTable<- remDR$getPageSource()[[1]] %>%
   data.frame(stringsAsFactors = FALSE)
 ```
 
-## Loop to Scrape the Tables on the Following pages (Number of Pages Needs to be Changed)
-
+## Loop to Scrape the Tables on the Following pages
 ```{r}
 #css selector for the next button "#ctl00_ContentPlaceHolder1_btnListNext"
 #find element
