@@ -1,6 +1,6 @@
 ## Demographic Table
 
-```r
+```{r}
 mylist.names <- dfInmates$DCNumber
 DemoList <- as.list(rep(NA, length(mylist.names)))
 names(DemoList) <- mylist.names
@@ -24,7 +24,7 @@ save(DemoList, file = "DemoTable.rda")
 
 ## Clean Demographic Table
 
-```r
+```{r}
 BtoNA <- function(g){
   g[g==""] <- NA
   return(g)
@@ -50,7 +50,7 @@ DemoTable<- rbind.fill(DemoList) #Because there are a different number of column
 
 ## Final Demographic Table 
 
-```r
+```{r}
 DemoTable <- DemoTable[,c(10,5,1,2,3,4,6,7,8,9,11,12,13,14,15)] #rearranging some columns
 
 DemoTable$Birth.Date. <- as.POSIXct(DemoTable$Birth.Date, tz = "UTC", format='%m/%d/%Y')
@@ -60,7 +60,7 @@ DemoTable$RunDate <- as.POSIXct(DemoTable$RunDat, tz = "UTC", format = '%m/%d/%Y
 
 ## Current Prison Sentence History (CPSH)
 
-```r
+```{r}
 mylist.names <- dfInmates$DCNumber
 CPSHList <- as.list(rep(NA, length(mylist.names)))
 names(CPSHList) <- mylist.names
@@ -85,7 +85,7 @@ save(CPSHList, file = "CPSHTable.rda")
 
 ## Clean CPSH Table
 
-```r
+```{r}
 sapply(CPSHList, is.data.frame) #make sure each element of the list is a dataframe 
 Ncols <- sapply(CPSHList, ncol)
 unique(Ncols)
@@ -116,7 +116,7 @@ for(df in 1:length(CPSHList)){
 
 ## Final CPSH Table 
 
-```r
+```{r}
 CPSHTable <- do.call(rbind.data.frame, CPSHList) #converts list to dataframe 
 
 rownames(CPSHTable) <- NULL #rownames null
@@ -128,7 +128,7 @@ CPSHTable$RunDate <- as.POSIXct(CPSHTable$RunDate,tz="UTC", format = "%m/%d/%Y")
 
 ## Incarceration History 
 
-```r
+```{r}
 mylist.names <- dfInmates$DCNumber
 IncarcerationList <- as.list(rep(NA, length(mylist.names)))
 names(IncarcerationList) <- mylist.names
@@ -153,7 +153,7 @@ save(IncarcerationList, file = "IncarcerationTable.rda")
 
 ## Clean Incarceration History 
 
-```r
+```{r}
 sapply(IncarcerationList, is.data.frame)
   
 IncarcerationList<- Filter(function(x) dim(x)[1] > 0, IncarcerationList) #works best, filters out those dataframes that are empty: 
@@ -182,7 +182,7 @@ for(df in 1:length(IncarcerationList)){
 
 ## Final Incarceration History Table 
 
-```r
+```{r}
 IncarcerationTable <- do.call(rbind.data.frame, IncarcerationList) #converts list to dataframe 
 
 rownames(IncarcerationTable) <- NULL #rownames null
@@ -195,7 +195,7 @@ IncarcerationTable$RunDate <- as.POSIXct(IncarcerationTable$RunDate, tz="UTC", f
 
 ## Prior Prison History 
 
-```r
+```{r}
 mylist.names <- dfInmates$DCNumber
 PriorPrisonList <- as.list(rep(NA, length(mylist.names)))
 names(PriorPrisonList) <- mylist.names
@@ -219,7 +219,7 @@ save(PriorPrisonList, file = "PriorPrisonTable.rda")
 
 ## Clean Prior Prison History 
 
-```r
+```{r}
 sapply(PriorPrisonList, is.data.frame)
 
 PriorPrisonList<- Filter(function(x) dim(x)[1] > 0, PriorPrisonList) #works best, filters out those dataframes that are empty: Some people did not have "Prior Prison Histories", since it was there first time being Incarcerated. 
@@ -247,7 +247,7 @@ for(df in 1:length(PriorPrisonList)){
 
 ## Final Prior Prison History Table 
 
-```r
+```{r}
 PriorPrisonTable <- do.call(rbind.data.frame, PriorPrisonList) #converts list to dataframe
 
 rownames(PriorPrisonTable) <- NULL #rownames null 
