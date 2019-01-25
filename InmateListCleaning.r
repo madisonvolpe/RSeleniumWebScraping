@@ -1,6 +1,6 @@
 ## Clean the Inmate List 
 
-```R
+```{R}
 str(dfInmates)
 #cleaning the column names
 
@@ -19,7 +19,7 @@ dfInmates$BirthDate <- as.POSIXct(dfInmates$BirthDate, tz = "UTC", format = "%m/
 
 ## Attach URLs for each Inmate to dfInmates
 
-```R
+```{R}
 #store base URL
 baseURL <- "http://www.dc.state.fl.us/offenderSearch/detail.aspx?Page=Detail"
 
